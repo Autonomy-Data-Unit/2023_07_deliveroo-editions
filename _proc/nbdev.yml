@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "deliveroo-editions"
+  site-url: "https://ribenamaplesyrup.github.io/deliveroo-editions"
+  description: "Tool for gathering data on Deliveroo's dark kitchens"
+  repo-branch: main
+  repo-url: "https://github.com/ribenamaplesyrup/deliveroo-editions"
