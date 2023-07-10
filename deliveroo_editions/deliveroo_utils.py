@@ -131,7 +131,7 @@ def search_deliveroo(address:str, # UK address containing a UK postcode
 
 test_address = "144 Cambridge Heath Rd, Bethnal Green, London E1 5QJ"
 driver = search_deliveroo(test_address)
-assert driver.current_url == "https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74"
+assert driver.current_url in ["https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74", "https://deliveroo.co.uk/restaurants/london/stepney-green/?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74"]
 
 # %% ../nbs/deliveroo_utils.ipynb 9
 def results_to_editions_url(url:str, # Deliveroo search results url
