@@ -116,7 +116,7 @@ def get_restaurants(url:str, # URL for Deliveroo restaurants page
 def search_deliveroo(address:str, # UK address containing a UK postcode
                      driver= None  # Initialised Selenium webdriver
                     ):
-                        "Searches Deliveroo for an address, returning webdriver element once search results page has loaded."
+                        """Searches Deliveroo for an address, returning webdriver element once search results page has loaded."""
                         base_url = "https://deliveroo.co.uk/"
                         if not driver:
                             driver = initialise_driver(service,True)
@@ -131,7 +131,7 @@ def search_deliveroo(address:str, # UK address containing a UK postcode
 
 test_address = "144 Cambridge Heath Rd, Bethnal Green, London E1 5QJ"
 driver = search_deliveroo(test_address)
-assert driver.current_url == 'https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74'
+assert driver.current_url == "https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74"
 
 # %% ../nbs/deliveroo_utils.ipynb 9
 def results_to_editions_url(url:str, # Deliveroo search results url
@@ -140,7 +140,7 @@ def results_to_editions_url(url:str, # Deliveroo search results url
                                return url.split('?')[0] + '?fulfillment_method=DELIVERY&tags=deliveroo+editions'
 
 test_url = 'https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&geohash=gcpvng8jvn74'
-assert results_to_editions_url(test_url) == 'https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&tags=deliveroo+editions'
+assert results_to_editions_url(test_url) == "https://deliveroo.co.uk/restaurants/london/stepney-green?fulfillment_method=DELIVERY&tags=deliveroo+editions"
 
 # %% ../nbs/deliveroo_utils.ipynb 10
 def get_editions(url:str, # URL for Deliveroo search results page
@@ -164,7 +164,7 @@ def get_editions(url:str, # URL for Deliveroo search results page
 test_url = "https://deliveroo.co.uk/restaurants/london/globe-town?fulfillment_method=DELIVERY&geohash=gcpvnuuyrtud"
 get_editions(test_url)
 
-# %% ../nbs/deliveroo_utils.ipynb 13
+# %% ../nbs/deliveroo_utils.ipynb 11
 def get_restaurants_from_editions_location(editions_list:list # list of editions locations ie ['london/whitechapel-editions','london/canary-wharf']
                                           ):
                                               "gets restaurant metadata for all restaurants based at listed editions locations"
@@ -178,7 +178,7 @@ editions_list = ['london/fish-island-area','london/blackwall']
 restaurants = get_restaurants_from_editions_location(editions_list)
 assert restaurants
 
-# %% ../nbs/deliveroo_utils.ipynb 14
+# %% ../nbs/deliveroo_utils.ipynb 12
 def get_editions_locations_near_addresses(addresses:list,  # list of address strings to search Deliveroo's website for
                                           driver= None 
                                 ):

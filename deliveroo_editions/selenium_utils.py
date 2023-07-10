@@ -20,6 +20,9 @@ headers = {
 # %% ../nbs/selenium_utils.ipynb 6
 service = Service(executable_path=ChromeDriverManager().install())
 
+# %% ../nbs/selenium_utils.ipynb 7
+assert service
+
 # %% ../nbs/selenium_utils.ipynb 8
 def initialise_driver(service, # Instance of `selenium.webdriver.chrome.service.Service`
                       headless:bool=False): # Set browser to run headless [False] or visble [True]
@@ -29,6 +32,9 @@ def initialise_driver(service, # Instance of `selenium.webdriver.chrome.service.
     return webdriver.Chrome(service=service, options=options) 
 
 driver = initialise_driver(service, True)
+
+# %% ../nbs/selenium_utils.ipynb 9
+assert driver
 
 # %% ../nbs/selenium_utils.ipynb 12
 def get_element_by(url:str, # url to search for
