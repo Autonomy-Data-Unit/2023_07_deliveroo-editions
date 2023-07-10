@@ -1,0 +1,8 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - 00_wayback.ipynb
+      - 01_FSA.ipynb
+      - deliveroo_utils.ipynb
+      - selenium_utils.ipynb
