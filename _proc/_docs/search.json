@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "deliveroo-editions",
+    "section": "",
+    "text": "This file will become your README and also the index of your documentation."
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "deliveroo-editions",
+    "section": "Install",
+    "text": "Install\npip install deliveroo_editions"
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "deliveroo-editions",
+    "section": "How to use",
+    "text": "How to use\nFill me in please! Don’t forget code examples:\n\n1+1\n\n2"
+  },
+  {
+    "objectID": "wayback.html",
+    "href": "wayback.html",
+    "title": "Wayback",
+    "section": "",
+    "text": "When scraping with selenium, we should provide relevant headers when making HTTP requests to effectively mimic a popular browser and client, thereby minimizing the chances of a website identifying this software as an automated process which it may block:\n\nheaders = {\n    \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36\"\n}\n\nThe following URL searches the Internet Archive for all archived Deliveroo webpages, including search results. With selenium, we can visit this page and filter the results to get all the URLs containing the “deliveroo+editions” filter by adding this text to an input HTML element on the Internet Archive site:\n\nbase_url = \"https://web.archive.org/web/*/https://deliveroo.co.uk/restaurants/*\"\n\nWe will automate a Chrome browser to navigate webpages and extract data. First we need to install appropriate Chrome webdrivers:\n\nservice = Service(executable_path=ChromeDriverManager().install())\n\n[WDM] - Downloading: 100%|█████████████████████████████| 8.29M/8.29M [00:00&lt;00:00, 9.02MB/s]\n\n\n\n# def initialise_driver(service, # Instance of `selenium.webdriver.chrome.service.Service`\n#                       headless:bool=False): # Set browser to run headless [False] or visble [True]\n#     \"Initialises Chrome WebDriver\"\n#     options = Options()\n#     options.headless = headless\n#     return webdriver.Chrome(service=service, options=options)\n\nLets go ahead an start driving a Chrome Browser. We will set headless to True so we won’t be able to see the browser. You can set headless=False if you’d like to view the browser.\n\ndriver = initialise_driver(service, True)\n\n/var/folders/hd/5f7tv_ld72b4c26jw6p9t8bh0000gn/T/ipykernel_6677/2726261738.py:6: DeprecationWarning: headless property is deprecated, instead use add_argument('--headless') or add_argument('--headless=new')\n  options.headless = headless\n\n\n\n# def get_element_by_id(url:str, # url to search for\n#                 driver, # driver initialised with `initialise_driver`\n#                 id:str, # id of element to wait for when url page renders\n#                 timeout:int=15, # seconds to wait for element to appear before timeout error\n#                ):\n#                    \"Gets selenium web element that matches HTML element ID. Waits for element to load before user-defined timeout\"\n#                    driver.get(base_url)\n#                    wait = WebDriverWait(driver, timeout)\n#                    filter_input = wait.until(EC.presence_of_element_located((By.ID, 'resultsUrl_filter')))\n                   \n#                    return filter_input\n\n\nfilter_input = get_element_by_id(base_url, driver, 'resultsUrl_filter')\n\nIf the function didn’t return an error then we know the element successfully loaded. Now we’d like to interact with a child of the resultsUrl_filter element and submit the deliveroo+editions filter to get the relevant results:\n\ninput_element = filter_input.find_element(By.TAG_NAME, 'input')\ninput_element.clear()\ninput_element.send_keys('deliveroo+editions')\n# time.sleep(1)\n\nLets now grab all the results from the table:\n\neditions_urls = []\nwhile not editions_urls: \n    table = driver.find_element(By.ID, 'resultsUrl')\n    cells = table.find_elements(By.CLASS_NAME, 'url')\n    editions_urls = []\n    for td in table.find_elements(By.CSS_SELECTOR, 'td.url'):\n        url = td.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')\n        editions_urls.append(url)\n\nWe can print all the archived Deliveroo search results filtering for editions:\n\neditions_urls[0:10]\n\n['https://web.archive.org/web/20210618145101*/https://deliveroo.co.uk/restaurants/brighton/brighton-editions?tags=deliveroo+editions',\n 'https://web.archive.org/web/20211129063703*/https://deliveroo.co.uk/restaurants/brighton/brighton?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210511014323*/https://deliveroo.co.uk/restaurants/brighton/hove?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210928043417/https://deliveroo.co.uk/restaurants/brighton/preston-park?tags=deliveroo+editions',\n 'https://web.archive.org/web/20220123154108/https://deliveroo.co.uk/restaurants/bristol/bristol-editions?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210624000853*/https://deliveroo.co.uk/restaurants/cambridge/cambridge-editions?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210510190649*/https://deliveroo.co.uk/restaurants/high-wycombe/high-wycombe?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210516192953*/https://deliveroo.co.uk/restaurants/leeds/chapeltown?tags=deliveroo+editions',\n 'https://web.archive.org/web/20210508185927*/https://deliveroo.co.uk/restaurants/leeds/leeds-editions?tags=deliveroo+editions',\n 'https://web.archive.org/web/20211204235430/https://deliveroo.co.uk/restaurants/london/acton-editions?tags=deliveroo+editions']\n\n\n\n\n\nModuleNotFoundError: No module named 'deliveroo_editions'"
+  },
+  {
+    "objectID": "deliveroo.html",
+    "href": "deliveroo.html",
+    "title": "Deliveroo",
+    "section": "",
+    "text": "get_element_by_id\n\n get_element_by_id (url:str, driver, id:str, timeout:int=15)\n\nGets selenium web element that matches HTML element ID. Waits for element to load before user-defined timeout\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nurl\nstr\n\nurl to search for\n\n\ndriver\n\n\ndriver initialised with initialise_driver\n\n\nid\nstr\n\nid of element to wait for when url page renders\n\n\ntimeout\nint\n15\nseconds to wait for element to appear before timeout error\n\n\n\n\n\n\nadd_metadata_to_dataset\n\n add_metadata_to_dataset (dataset, metadata, area_url)\n\n\n\n\nget_metadata\n\n get_metadata (tag)\n\n\n\n\nadd_restaurants\n\n add_restaurants (dataset, area_url)\n\n\n\n\nget_yearly_captures\n\n get_yearly_captures (year, url)\n\n\n\n\ninitialise_driver\n\n initialise_driver (service, headless:bool=False)\n\nInitialises Chrome WebDriver\n\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nservice\n\n\nInstance of selenium.webdriver.chrome.service.Service\n\n\nheadless\nbool\nFalse\nSet browser to run headless [False] or visble [True]"
+  }
+]
