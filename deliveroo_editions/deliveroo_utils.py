@@ -2,9 +2,10 @@
 
 # %% auto 0
 __all__ = ['tags', 'restaurants', 'timestamped_restaurants', 'test_address', 'driver', 'test_url', 'editions_list', 'addresses',
-           'test_editions', 'get_restaurant_tags', 'get_timestamp', 'add_timestamps_to_restaurants', 'get_restaurants',
-           'search_deliveroo', 'results_to_editions_url', 'get_editions', 'get_restaurants_from_editions_location',
-           'get_editions_locations_near_addresses']
+           'test_editions', 'url', 'get_restaurant_tags', 'get_timestamp', 'add_timestamps_to_restaurants',
+           'get_restaurants', 'search_deliveroo', 'results_to_editions_url', 'get_editions',
+           'get_restaurants_from_editions_location', 'get_editions_locations_near_addresses', 'remove_time_from_url',
+           'get_address_from_restaurant_url']
 
 # %% ../nbs/deliveroo_utils.ipynb 2
 from .selenium_utils import *
@@ -17,6 +18,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from tqdm import tqdm
+from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 from ratelimit import limits, RateLimitException, sleep_and_retry
 import time
@@ -202,4 +204,53 @@ test_editions = ['london/whitechapel-editions',
  'london/hornsey-station',
  'london/kentish-town',
  'london/wood-green']
+
 assert any(edition_location in test_editions for edition_location in get_editions_locations_near_addresses(addresses))
+
+# %% ../nbs/deliveroo_utils.ipynb 13
+def remove_time_from_url(url):
+    url = url.replace("day=today", "")
+    split_url = url.split('&')
+    if "time=" in split_url[-1]:
+        return "".join(url.split('&')[0:-1])
+    else:
+        return url
+
+# %% ../nbs/deliveroo_utils.ipynb 14
+def get_address_from_restaurant_url(url:str,  # Deliveroo URL
+                                    driver= None
+                                   ):
+                                       "scrape restaurant address from Deliveroo page"
+                                       driver = initialise_driver(service,False)
+                                       url = remove_time_from_url(url)
+                                       driver.get(url)
+                                       # click element on page to remove pop-up
+                                    
+                                       attempts = 0
+                                       while attempts<2:
+                                           try:
+                                               wait = WebDriverWait(driver, 10)
+                                               nav_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[class*="MenuNavHeader"]')))
+                                               nav_element.click()
+                                               wait = WebDriverWait(driver, 20)
+                                               info_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Info']")))
+                                               while info_element is not None:
+                                                   try:
+                                                       info_button = info_element.find_element("xpath", "./button")
+                                                       break
+                                                   except:
+                                                       info_element = info_element.find_element("xpath", "..")
+                                               info_button.click()
+                                               attempts = 2
+                                           except:
+                                               ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                                               attempts += 1
+                                       wait = WebDriverWait(driver, 10)
+                                       map_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div[data-testid*="content-card-map"]')))
+                                       uilines = map_element.find_element("xpath", "..").find_element(By.CSS_SELECTOR, 'div[class*="UILines"]')
+                                       address = uilines.text
+                                       driver.close()
+                                       return address
+                                       
+url = 'https://deliveroo.co.uk/menu/London/battersea-york-road/jakobs-kitchen-editions-byr-new?day=today&geohash=gcpugcwkyb25&time=ASAP'
+assert get_address_from_restaurant_url(url) == 'Unit 13-15, Heliport Industrial Estate, Battersea, London, SW113SS'
