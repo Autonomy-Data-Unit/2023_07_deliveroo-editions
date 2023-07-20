@@ -33,7 +33,7 @@ def get_restaurant_tags(url:str, # URL for Deliveroo restaurants page
     "Returns all list elements from Deliveroo restaurants webpage corresponding to a restaurant"
     if not driver:
         driver = initialise_driver(service,False)
-    time.sleep(1)
+    # time.sleep(1)
     driver.get(url)
     wait = WebDriverWait(driver, 3)  # Maximum wait time in seconds
     ul_element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'ul[class*="HomeFeedGrid"]')))
